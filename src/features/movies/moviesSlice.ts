@@ -17,6 +17,72 @@ export interface Movie {
   vote_count: number;
 }
 
+export interface TVShow {
+  id: number;
+  name: string;
+  overview: string;
+  poster_path: string | null;
+  first_air_date: string;
+  vote_average: number;
+  backdrop_path: string | null;
+  genre_ids: number[];
+  adult: boolean;
+  original_language: string;
+  original_name: string;
+  popularity: number;
+  vote_count: number;
+  origin_country: string[];
+}
+
+export type MediaItem = Movie | TVShow;
+
+export interface TVShowDetails extends Omit<TVShow, 'genre_ids'> {
+  created_by: Array<{
+    id: number;
+    name: string;
+    profile_path: string | null;
+  }>;
+  episode_run_time: number[];
+  genres: Genre[];
+  homepage: string;
+  in_production: boolean;
+  languages: string[];
+  last_air_date: string;
+  last_episode_to_air: {
+    air_date: string;
+    episode_number: number;
+    id: number;
+    name: string;
+    overview: string;
+    season_number: number;
+  } | null;
+  next_episode_to_air: {
+    air_date: string;
+    episode_number: number;
+    id: number;
+    name: string;
+    overview: string;
+    season_number: number;
+  } | null;
+  number_of_episodes: number;
+  number_of_seasons: number;
+  production_companies: ProductionCompany[];
+  production_countries: ProductionCountry[];
+  seasons: Array<{
+    air_date: string;
+    episode_count: number;
+    id: number;
+    name: string;
+    overview: string;
+    poster_path: string | null;
+    season_number: number;
+  }>;
+  spoken_languages: SpokenLanguage[];
+  status: string;
+  tagline: string;
+  type: string;
+}
+
 export interface Genre {
   id: number;
   name: string;
@@ -101,6 +167,13 @@ interface MoviesResponse {
   total_results: number;
 }
 
+interface TVShowsResponse {
+  page: number;
+  results: TVShow[];
+  total_pages: number;
+  total_results: number;
+}
+
 const API_READ_ACCESS_TOKEN = process.env.NEXT_PUBLIC_TMDB_API_READ_ACCESS_TOKEN || '';
 const BASE_URL = 'https://api.themoviedb.org/3';
 
@@ -131,6 +204,53 @@ export const moviesApi = createApi({
     getTopRatedMovies: builder.query<MoviesResponse, { page?: number }>({
       query: ({ page = 1 } = {}) => `movie/top_rated?language=en-US&page=${page}`,
       providesTags: ['Movie'],
+      keepUnusedDataFor: 300,
+    }),
+    getUpcomingMovies: builder.query<MoviesResponse, { page?: number }>({
+      query: ({ page = 1 } = {}) => `movie/upcoming?language=en-US&page=${page}`,
+      providesTags: ['Movie'],
+      keepUnusedDataFor: 300,
+    }),
+    // TV Show endpoints
+    getPopularTVShows: builder.query<TVShowsResponse, { page?: number }>({
+      query: ({ page = 1 } = {}) => `tv/popular?language=en-US&page=${page}`,
+      providesTags: ['Movie'],
+      keepUnusedDataFor: 300,
+    }),
+    getTopRatedTVShows: builder.query<TVShowsResponse, { page?: number }>({
+      query: ({ page = 1 } = {}) => `tv/top_rated?language=en-US&page=${page}`,
+      providesTags: ['Movie'],
+      keepUnusedDataFor: 300,
+    }),
+    getOnTheAirTVShows: builder.query<TVShowsResponse, { page?: number }>({
+      query: ({ page = 1 } = {}) => `tv/on_the_air?language=en-US&page=${page}`,
+      providesTags: ['Movie'],
+      keepUnusedDataFor: 300,
+    }),
+    getAiringTodayTVShows: builder.query<TVShowsResponse, { page?: number }>({
+      query: ({ page = 1 } = {}) => `tv/airing_today?language=en-US&page=${page}`,
+      providesTags: ['Movie'],
+      keepUnusedDataFor: 300,
+    }),
+    // TV Show detail endpoints
+    getTVShowDetails: builder.query<TVShowDetails, number>({
+      query: (id) => `tv/${id}?language=en-US`,
+      providesTags: (result, error, id) => [{ type: 'Movie', id }],
+      keepUnusedDataFor: 600,
+    }),
+    getTVShowCredits: builder.query<MovieCredits, number>({
+      query: (id) => `tv/${id}/credits`,
+      providesTags: (result, error, id) => [{ type: 'Movie', id }],
+      keepUnusedDataFor: 600,
+    }),
+    getTVShowVideos: builder.query<MovieVideos, number>({
+      query: (id) => `tv/${id}/videos`,
+      providesTags: (result, error, id) => [{ type: 'Movie', id }],
+      keepUnusedDataFor: 600,
+    }),
+    getSimilarTVShows: builder.query<TVShowsResponse, { id: number; page?: number }>({
+      query: ({ id, page = 1 }) => `tv/${id}/similar?language=en-US&page=${page}`,
+      providesTags: (result, error, { id }) => [{ type: 'Movie', id }],
       keepUnusedDataFor: 300,
     }),
     getMovieDetails: builder.query<MovieDetails, number>({
@@ -164,6 +284,15 @@ export const {
   useGetNowPlayingMoviesQuery,
   useGetPopularMoviesQuery,
   useGetTopRatedMoviesQuery,
+  useGetUpcomingMoviesQuery,
+  useGetPopularTVShowsQuery,
+  useGetTopRatedTVShowsQuery,
+  useGetOnTheAirTVShowsQuery,
+  useGetAiringTodayTVShowsQuery,
+  useGetTVShowDetailsQuery,
+  useGetTVShowCreditsQuery,
+  useGetTVShowVideosQuery,
+  useGetSimilarTVShowsQuery,
   useGetMovieDetailsQuery,
   useGetMovieCreditsQuery,
   useGetMovieVideosQuery,

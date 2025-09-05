@@ -3,41 +3,43 @@ import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { 
-  useGetMovieDetailsQuery, 
-  useGetMovieCreditsQuery, 
-  useGetMovieVideosQuery,
-  useGetSimilarMoviesQuery 
+  useGetTVShowDetailsQuery, 
+  useGetTVShowCreditsQuery, 
+  useGetTVShowVideosQuery,
+  useGetSimilarTVShowsQuery 
 } from "../../../features/movies/moviesSlice";
 import LoadingSpinner from "../../../components/LoadingSpinner";
 import ErrorMessage from "../../../components/ErrorMessage";
 import VideoPlayer from "../../../components/VideoPlayer";
 import MovieCard from "../../../components/MovieCard";
 
-export default function MovieDetailsPage() {
+export default function TVShowDetailsPage() {
   const params = useParams();
   const router = useRouter();
-  const movieId = parseInt(params.id as string);
+  const tvShowId = parseInt(params.id as string);
 
-  const { data: movieDetails, error: detailsError, isLoading: detailsLoading } = useGetMovieDetailsQuery(movieId);
-  const { data: movieCredits, error: creditsError, isLoading: creditsLoading } = useGetMovieCreditsQuery(movieId);
-  const { data: movieVideos, error: videosError, isLoading: videosLoading } = useGetMovieVideosQuery(movieId);
-  const { data: similarMovies, error: similarError, isLoading: similarLoading } = useGetSimilarMoviesQuery({ id: movieId });
+  const { data: tvShowDetails, error: detailsError, isLoading: detailsLoading } = useGetTVShowDetailsQuery(tvShowId);
+  const { data: tvShowCredits, error: creditsError, isLoading: creditsLoading } = useGetTVShowCreditsQuery(tvShowId);
+  const { data: tvShowVideos, error: videosError, isLoading: videosLoading } = useGetTVShowVideosQuery(tvShowId);
+  const { data: similarTVShows, error: similarError, isLoading: similarLoading } = useGetSimilarTVShowsQuery({ id: tvShowId });
 
-  const formatRuntime = (minutes: number) => {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return `${hours}h ${mins}m`;
+  const formatEpisodeRunTime = (runtimes: number[]) => {
+    if (!runtimes || runtimes.length === 0) return "N/A";
+    const avgRuntime = Math.round(runtimes.reduce((acc, curr) => acc + curr, 0) / runtimes.length);
+    return `${avgRuntime} min`;
   };
 
-  const formatMoney = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(amount);
+  const formatAirDate = (dateString: string) => {
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
   };
 
-  const handleMovieClick = (movieId: number) => {
-    router.push(`/movie/${movieId}`);
+  const handleTVShowClick = (tvShowId: number) => {
+    router.push(`/tv/${tvShowId}`);
   };
 
   if (detailsLoading) {
@@ -48,16 +50,16 @@ export default function MovieDetailsPage() {
     );
   }
 
-  if (detailsError || !movieDetails) {
+  if (detailsError || !tvShowDetails) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <ErrorMessage message="Failed to load movie details" />
+        <ErrorMessage message="Failed to load TV show details" />
       </div>
     );
   }
 
-  const director = movieCredits?.crew.find((person) => person.job === "Director");
-  const mainCast = movieCredits?.cast.slice(0, 20);
+  const creators = tvShowDetails.created_by;
+  const mainCast = tvShowCredits?.cast.slice(0, 20);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -71,17 +73,17 @@ export default function MovieDetailsPage() {
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            Back to Movies
+            Back to Shows
           </Link>
         </div>
       </div>
 
       {/* Hero Section */}
       <div className="relative h-[50vh] md:h-[60vh]">
-        {movieDetails.backdrop_path ? (
+        {tvShowDetails.backdrop_path ? (
           <Image
-            src={`https://image.tmdb.org/t/p/original${movieDetails.backdrop_path}`}
-            alt={movieDetails.title}
+            src={`https://image.tmdb.org/t/p/original${tvShowDetails.backdrop_path}`}
+            alt={tvShowDetails.name}
             fill
             className="object-cover"
             priority
@@ -91,21 +93,22 @@ export default function MovieDetailsPage() {
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
         
-        {/* Movie Info Overlay */}
+        {/* TV Show Info Overlay */}
         <div className="absolute bottom-8 left-8 right-8 text-white">
           <div className="max-w-6xl mx-auto">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4">{movieDetails.title}</h1>
-            {movieDetails.tagline && (
-              <p className="text-xl md:text-2xl text-gray-200 italic mb-4">{movieDetails.tagline}</p>
+            <h1 className="text-4xl md:text-6xl font-bold mb-4">{tvShowDetails.name}</h1>
+            {tvShowDetails.tagline && (
+              <p className="text-xl md:text-2xl text-gray-200 italic mb-4">{tvShowDetails.tagline}</p>
             )}
             <div className="flex flex-wrap gap-6 text-lg">
-              <span className={`flex items-center ${movieDetails.vote_average >= 5.0 ? 'text-green-400' : 'text-red-400'}`}>
-                ⭐ {movieDetails.vote_average.toFixed(1)} ({movieDetails.vote_count.toLocaleString()} votes)
+              <span className={`flex items-center ${tvShowDetails.vote_average >= 5.0 ? 'text-green-400' : 'text-red-400'}`}>
+                ⭐ {tvShowDetails.vote_average.toFixed(1)} ({tvShowDetails.vote_count.toLocaleString()} votes)
               </span>
-              {movieDetails.runtime && (
-                <span>{formatRuntime(movieDetails.runtime)}</span>
+              {tvShowDetails.episode_run_time && tvShowDetails.episode_run_time.length > 0 && (
+                <span>{formatEpisodeRunTime(tvShowDetails.episode_run_time)}</span>
               )}
-              <span>{new Date(movieDetails.release_date).getFullYear()}</span>
+              <span>{new Date(tvShowDetails.first_air_date).getFullYear()}</span>
+              <span>{tvShowDetails.number_of_seasons} Season{tvShowDetails.number_of_seasons > 1 ? 's' : ''}</span>
             </div>
           </div>
         </div>
@@ -116,11 +119,11 @@ export default function MovieDetailsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Poster */}
           <div className="lg:col-span-1">
-            {movieDetails.poster_path ? (
+            {tvShowDetails.poster_path ? (
               <div className="relative aspect-[2/3] w-full max-w-sm mx-auto lg:mx-0 sticky top-24">
                 <Image
-                  src={`https://image.tmdb.org/t/p/w780${movieDetails.poster_path}`}
-                  alt={movieDetails.title}
+                  src={`https://image.tmdb.org/t/p/w780${tvShowDetails.poster_path}`}
+                  alt={tvShowDetails.name}
                   fill
                   className="object-cover rounded-lg shadow-xl"
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
@@ -139,16 +142,16 @@ export default function MovieDetailsPage() {
             <div>
               <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">Overview</h2>
               <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
-                {movieDetails.overview || "No overview available."}
+                {tvShowDetails.overview || "No overview available."}
               </p>
             </div>
 
             {/* Genres */}
-            {movieDetails.genres && movieDetails.genres.length > 0 && (
+            {tvShowDetails.genres && tvShowDetails.genres.length > 0 && (
               <div>
                 <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Genres</h3>
                 <div className="flex flex-wrap gap-3">
-                  {movieDetails.genres.map((genre) => (
+                  {tvShowDetails.genres.map((genre) => (
                     <span
                       key={genre.id}
                       className="px-4 py-2 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-lg font-medium"
@@ -160,18 +163,26 @@ export default function MovieDetailsPage() {
               </div>
             )}
 
-            {/* Director */}
-            {director && (
+            {/* Creators */}
+            {creators && creators.length > 0 && (
               <div>
-                <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Director</h3>
-                <p className="text-lg text-gray-700 dark:text-gray-300">{director.name}</p>
+                <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+                  Creator{creators.length > 1 ? 's' : ''}
+                </h3>
+                <div className="flex flex-wrap gap-4">
+                  {creators.map((creator) => (
+                    <div key={creator.id} className="text-lg text-gray-700 dark:text-gray-300">
+                      {creator.name}
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
             {/* Videos/Trailers */}
-            {movieVideos?.results && movieVideos.results.length > 0 && (
+            {tvShowVideos?.results && tvShowVideos.results.length > 0 && (
               <div>
-                <VideoPlayer videos={movieVideos.results} />
+                <VideoPlayer videos={tvShowVideos.results} />
               </div>
             )}
 
@@ -211,47 +222,55 @@ export default function MovieDetailsPage() {
               </div>
             )}
 
-            {/* Additional Info */}
+            {/* TV Show Details */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-              <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white col-span-full">Movie Details</h3>
+              <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white col-span-full">Show Details</h3>
               
-              {movieDetails.budget > 0 && (
-                <div>
-                  <h4 className="font-semibold text-gray-900 dark:text-white text-lg">Budget</h4>
-                  <p className="text-gray-700 dark:text-gray-300">{formatMoney(movieDetails.budget)}</p>
-                </div>
-              )}
-              {movieDetails.revenue > 0 && (
-                <div>
-                  <h4 className="font-semibold text-gray-900 dark:text-white text-lg">Revenue</h4>
-                  <p className="text-gray-700 dark:text-gray-300">{formatMoney(movieDetails.revenue)}</p>
-                </div>
-              )}
               <div>
                 <h4 className="font-semibold text-gray-900 dark:text-white text-lg">Status</h4>
-                <p className="text-gray-700 dark:text-gray-300">{movieDetails.status}</p>
+                <p className="text-gray-700 dark:text-gray-300">{tvShowDetails.status}</p>
               </div>
+              
+              <div>
+                <h4 className="font-semibold text-gray-900 dark:text-white text-lg">First Air Date</h4>
+                <p className="text-gray-700 dark:text-gray-300">{formatAirDate(tvShowDetails.first_air_date)}</p>
+              </div>
+
+              {tvShowDetails.last_air_date && (
+                <div>
+                  <h4 className="font-semibold text-gray-900 dark:text-white text-lg">Last Air Date</h4>
+                  <p className="text-gray-700 dark:text-gray-300">{formatAirDate(tvShowDetails.last_air_date)}</p>
+                </div>
+              )}
+
+              <div>
+                <h4 className="font-semibold text-gray-900 dark:text-white text-lg">Episodes</h4>
+                <p className="text-gray-700 dark:text-gray-300">{tvShowDetails.number_of_episodes} episodes</p>
+              </div>
+
+              <div>
+                <h4 className="font-semibold text-gray-900 dark:text-white text-lg">Seasons</h4>
+                <p className="text-gray-700 dark:text-gray-300">{tvShowDetails.number_of_seasons} seasons</p>
+              </div>
+
               <div>
                 <h4 className="font-semibold text-gray-900 dark:text-white text-lg">Original Language</h4>
-                <p className="text-gray-700 dark:text-gray-300">{movieDetails.original_language?.toUpperCase()}</p>
+                <p className="text-gray-700 dark:text-gray-300">{tvShowDetails.original_language?.toUpperCase()}</p>
               </div>
+
+              {tvShowDetails.in_production && (
+                <div>
+                  <h4 className="font-semibold text-gray-900 dark:text-white text-lg">Production Status</h4>
+                  <p className="text-green-600 dark:text-green-400">In Production</p>
+                </div>
+              )}
             </div>
 
             {/* External Links */}
             <div className="flex gap-4">
-              {movieDetails.imdb_id && (
+              {tvShowDetails.homepage && (
                 <a
-                  href={`https://www.imdb.com/title/${movieDetails.imdb_id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-medium transition-colors duration-200"
-                >
-                  View on IMDb
-                </a>
-              )}
-              {movieDetails.homepage && (
-                <a
-                  href={movieDetails.homepage}
+                  href={tvShowDetails.homepage}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors duration-200"
@@ -263,20 +282,20 @@ export default function MovieDetailsPage() {
           </div>
         </div>
 
-        {/* Similar Movies */}
-        {similarMovies?.results && similarMovies.results.length > 0 && (
+        {/* Similar TV Shows */}
+        {similarTVShows?.results && similarTVShows.results.length > 0 && (
           <div className="mt-12">
             <h3 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">You Might Also Like</h3>
              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-              {similarMovies.results
-                .filter(movie => movie && movie.id) // Filter out null/undefined items
+              {similarTVShows.results
+                .filter(tvShow => tvShow && tvShow.id) // Filter out null/undefined items
                 .slice(0, 12)
-                .map((movie) => (
+                .map((tvShow) => (
                   <MovieCard 
-                    key={movie.id} 
-                    item={movie}
-                    mediaType="movie"
-                    onClick={handleMovieClick}
+                    key={tvShow.id} 
+                    item={tvShow}
+                    mediaType="tv"
+                    onClick={handleTVShowClick}
                   />
                 ))}
             </div>

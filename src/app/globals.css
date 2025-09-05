@@ -104,3 +104,19 @@ html {
     background: #718096;
   }
 }
+
+/* Carousel animation */
+@keyframes progress {
+  0% {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  100% {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+}
+
+.animate-progress {
+  animation: progress linear forwards;
+}

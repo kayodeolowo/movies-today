@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 import { Video } from "../features/movies/moviesSlice";
 
 interface VideoPlayerProps {
@@ -53,10 +54,12 @@ export default function VideoPlayer({ videos }: VideoPlayerProps) {
               }`}
             >
               <div className="relative w-32 aspect-video bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
-                <img
-                  src={`https://img.youtube.com/vi/${video.key}/mqdefault.jpg`}
+                <Image
+                  src={`https://img.youtube.com/vi/${video.key}/hqdefault.jpg`}
                   alt={video.name}
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
+                  sizes="128px"
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center group-hover:bg-opacity-30 transition-colors">
                   <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
