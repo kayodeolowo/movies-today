@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import Image from "next/image";
 import { useGetMovieDetailsQuery, useGetMovieCreditsQuery, useGetMovieVideosQuery } from "../features/movies/moviesSlice";
-import LoadingSpinner from "./LoadingSpinner";
+import SkeletonLoader from "./LoadingSpinner";
 import ErrorMessage from "./ErrorMessage";
 import VideoPlayer from "./VideoPlayer";
 
@@ -74,7 +74,11 @@ export default function MovieDetailsModal({ movieId, isOpen, onClose }: MovieDet
         </button>
 
         <div className="overflow-y-auto max-h-[90vh]">
-          {detailsLoading && <LoadingSpinner />}
+          {detailsLoading && (
+            <div className="p-6">
+              <SkeletonLoader type="details" />
+            </div>
+          )}
           
           {detailsError && (
             <ErrorMessage message="Failed to load movie details" />

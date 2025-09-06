@@ -1,5 +1,6 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
+import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { 
@@ -8,20 +9,29 @@ import {
   useGetMovieVideosQuery,
   useGetSimilarMoviesQuery 
 } from "../../../features/movies/moviesSlice";
-import LoadingSpinner from "../../../components/LoadingSpinner";
+import SkeletonLoader from "../../../components/LoadingSpinner";
 import ErrorMessage from "../../../components/ErrorMessage";
 import VideoPlayer from "../../../components/VideoPlayer";
 import MovieCard from "../../../components/MovieCard";
+import { useRecentlyViewed } from "../../../hooks/useRecentlyViewed";
 
 export default function MovieDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const movieId = parseInt(params.id as string);
+  const { addToRecentlyViewed } = useRecentlyViewed();
 
   const { data: movieDetails, error: detailsError, isLoading: detailsLoading } = useGetMovieDetailsQuery(movieId);
   const { data: movieCredits, error: creditsError, isLoading: creditsLoading } = useGetMovieCreditsQuery(movieId);
   const { data: movieVideos, error: videosError, isLoading: videosLoading } = useGetMovieVideosQuery(movieId);
   const { data: similarMovies, error: similarError, isLoading: similarLoading } = useGetSimilarMoviesQuery({ id: movieId });
+
+  // Add to recently viewed when movie details are loaded
+  useEffect(() => {
+    if (movieDetails) {
+      addToRecentlyViewed(movieDetails, 'movie');
+    }
+  }, [movieDetails, addToRecentlyViewed]);
 
   const formatRuntime = (minutes: number) => {
     const hours = Math.floor(minutes / 60);
@@ -41,11 +51,7 @@ export default function MovieDetailsPage() {
   };
 
   if (detailsLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <LoadingSpinner />
-      </div>
-    );
+    return <SkeletonLoader type="details" />;
   }
 
   if (detailsError || !movieDetails) {

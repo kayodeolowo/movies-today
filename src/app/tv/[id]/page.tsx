@@ -1,5 +1,6 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
+import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { 
@@ -8,20 +9,29 @@ import {
   useGetTVShowVideosQuery,
   useGetSimilarTVShowsQuery 
 } from "../../../features/movies/moviesSlice";
-import LoadingSpinner from "../../../components/LoadingSpinner";
+import SkeletonLoader from "../../../components/LoadingSpinner";
 import ErrorMessage from "../../../components/ErrorMessage";
 import VideoPlayer from "../../../components/VideoPlayer";
 import MovieCard from "../../../components/MovieCard";
+import { useRecentlyViewed } from "../../../hooks/useRecentlyViewed";
 
 export default function TVShowDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const tvShowId = parseInt(params.id as string);
+  const { addToRecentlyViewed } = useRecentlyViewed();
 
   const { data: tvShowDetails, error: detailsError, isLoading: detailsLoading } = useGetTVShowDetailsQuery(tvShowId);
   const { data: tvShowCredits, error: creditsError, isLoading: creditsLoading } = useGetTVShowCreditsQuery(tvShowId);
   const { data: tvShowVideos, error: videosError, isLoading: videosLoading } = useGetTVShowVideosQuery(tvShowId);
   const { data: similarTVShows, error: similarError, isLoading: similarLoading } = useGetSimilarTVShowsQuery({ id: tvShowId });
+
+  // Add to recently viewed when TV show details are loaded
+  useEffect(() => {
+    if (tvShowDetails) {
+      addToRecentlyViewed(tvShowDetails, 'tv');
+    }
+  }, [tvShowDetails, addToRecentlyViewed]);
 
   const formatEpisodeRunTime = (runtimes: number[]) => {
     if (!runtimes || runtimes.length === 0) return "N/A";
@@ -43,11 +53,7 @@ export default function TVShowDetailsPage() {
   };
 
   if (detailsLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <LoadingSpinner />
-      </div>
-    );
+    return <SkeletonLoader type="details" />;
   }
 
   if (detailsError || !tvShowDetails) {

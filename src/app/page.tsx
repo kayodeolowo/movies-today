@@ -12,7 +12,7 @@ import {
   useSearchMoviesQuery 
 } from "../features/movies/moviesSlice";
 import MovieCard from "../components/MovieCard";
-import LoadingSpinner from "../components/LoadingSpinner";
+import SkeletonLoader from "../components/LoadingSpinner";
 import ErrorMessage from "../components/ErrorMessage";
 import SearchBar from "../components/SearchBar";
 import MediaFilters, { MediaType, MovieCategory, TVCategory } from "../components/MediaFilters";
@@ -151,12 +151,10 @@ export default function Home() {
       {/* Header */}
       <header className="">
         <div className="max-w-7xl mx-auto px-4 py-6">
-        
-          
           {/* Search and Filters Row */}
-          <div className="flex flex-col lg:flex-row items-center justify-center gap-6 max-w-6xl mx-auto">
-            {/* Search Bar */}
-            <div className="w-full lg:flex-1 max-w-md lg:max-w-lg">
+          <div className="flex flex-col lg:flex-row items-center gap-6">
+            {/* Search Bar - Takes up most of the space */}
+            <div className="w-full lg:flex-1">
               <SearchBar 
                 onSearch={handleSearch} 
                 onClear={handleClearSearch}
@@ -187,7 +185,7 @@ export default function Home() {
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
-                Searching for: "{searchQuery}" • Page {currentPage}
+                Searching for: {searchQuery} • Page {currentPage}
               </span>
             </div>
           )}
@@ -198,7 +196,7 @@ export default function Home() {
       <main className="max-w-7xl mx-auto px-4 py-8">
 
         {/* Loading State */}
-        {isLoading && <LoadingSpinner />}
+        {isLoading && <SkeletonLoader type="grid" count={20} />}
 
         {/* Error State */}
         {error && (

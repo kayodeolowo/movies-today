@@ -7,9 +7,10 @@ import { Movie, MediaItem } from "../features/movies/moviesSlice";
 interface HeroCarouselProps {
   movies: Movie[];
   autoSlideInterval?: number;
+  isLoading?: boolean;
 }
 
-export default function HeroCarousel({ movies, autoSlideInterval = 4000 }: HeroCarouselProps) {
+export default function HeroCarousel({ movies, autoSlideInterval = 4000, isLoading = false }: HeroCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
@@ -102,7 +103,74 @@ export default function HeroCarousel({ movies, autoSlideInterval = 4000 }: HeroC
     return gradients[movieId % gradients.length];
   };
 
-  if (!movies.length) return null;
+  // Skeleton loader when loading or no movies
+  if (isLoading || !movies.length) {
+    return (
+      <div className="relative w-full h-[60vh] md:h-[70vh] lg:h-[80vh] overflow-hidden rounded-2xl shadow-2xl">
+        {/* Skeleton background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-700 dark:to-gray-800 animate-pulse">
+          {/* Shimmer effect */}
+          <div className="absolute inset-0 -skew-x-12 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+        </div>
+
+        {/* Gradient Overlays */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-black/30" />
+
+        {/* Skeleton Content */}
+        <div className="absolute inset-0 flex items-end">
+          <div className="w-full p-6 md:p-8 lg:p-12">
+            <div className="max-w-7xl mx-auto">
+              <div className="max-w-3xl">
+                {/* Skeleton Title */}
+                <div className="h-12 md:h-16 lg:h-20 bg-white/20 rounded-lg mb-4 animate-pulse"></div>
+                
+                {/* Skeleton Details */}
+                <div className="flex flex-wrap items-center gap-4 mb-6">
+                  <div className="h-6 w-16 bg-white/20 rounded animate-pulse"></div>
+                  <div className="h-6 w-1 bg-white/20 rounded animate-pulse"></div>
+                  <div className="h-6 w-12 bg-white/20 rounded animate-pulse"></div>
+                  <div className="h-6 w-1 bg-white/20 rounded animate-pulse"></div>
+                  <div className="h-6 w-20 bg-white/20 rounded-full animate-pulse"></div>
+                </div>
+
+                {/* Skeleton Overview */}
+                <div className="space-y-3 mb-8">
+                  <div className="h-5 bg-white/20 rounded animate-pulse"></div>
+                  <div className="h-5 bg-white/20 rounded animate-pulse w-4/5"></div>
+                  <div className="h-5 bg-white/20 rounded animate-pulse w-3/5"></div>
+                </div>
+
+                {/* Skeleton Buttons */}
+                <div className="flex flex-wrap gap-4">
+                  <div className="h-14 w-36 bg-white/20 rounded-full animate-pulse"></div>
+                  <div className="h-14 w-32 bg-white/20 rounded-full animate-pulse"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Skeleton Navigation Arrows */}
+        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-black/20 rounded-full animate-pulse"></div>
+        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-black/20 rounded-full animate-pulse"></div>
+
+        {/* Skeleton Dots */}
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
+          <div className="flex space-x-3">
+            {[...Array(3)].map((_, index) => (
+              <div key={index} className="w-3 h-3 bg-white/30 rounded-full animate-pulse"></div>
+            ))}
+          </div>
+        </div>
+
+        {/* Skeleton Progress Bar */}
+        <div className="absolute bottom-0 left-0 w-full h-1 bg-white/20">
+          <div className="h-full bg-white/30 w-1/3 animate-pulse"></div>
+        </div>
+      </div>
+    );
+  }
 
   const currentMovie = movies[currentIndex];
 
@@ -137,11 +205,9 @@ export default function HeroCarousel({ movies, autoSlideInterval = 4000 }: HeroC
                   blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                   quality={85}
                 />
-                {/* Loading shimmer overlay */}
+                {/* Loading skeleton overlay */}
                 {!imagesLoaded.has(movie.id) && (
-                  <div className="absolute inset-0 bg-gray-800 animate-pulse">
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                  </div>
+                  <div className="absolute inset-0 bg-gray-300 dark:bg-gray-700 animate-pulse"></div>
                 )}
               </>
             ) : (
