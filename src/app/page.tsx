@@ -9,7 +9,9 @@ import {
   useGetTopRatedTVShowsQuery,
   useGetOnTheAirTVShowsQuery,
   useGetAiringTodayTVShowsQuery,
-  useSearchMoviesQuery 
+  useSearchMoviesQuery,
+  useGetTrendingMoviesQuery,
+  useGetTrendingTVShowsQuery
 } from "../features/movies/moviesSlice";
 import MovieCard from "../components/MovieCard";
 import SkeletonLoader from "../components/LoadingSpinner";
@@ -18,6 +20,8 @@ import SearchBar from "../components/SearchBar";
 import MediaFilters, { MediaType, MovieCategory, TVCategory } from "../components/MediaFilters";
 import Pagination from "../components/Pagination";
 import HeroCarousel from "../components/HeroCarousel";
+import MovieSection from "../components/MovieSection";
+import TVSection from "../components/TVSection";
 
 export default function Home() {
   const [mediaType, setMediaType] = useState<MediaType>("movie");
@@ -106,6 +110,11 @@ export default function Home() {
 
   // Hero carousel data - always fetch popular movies for the carousel
   const heroCarouselQuery = useGetPopularMoviesQuery({ page: 1 });
+
+  // Data for the new sections - only fetch when not searching
+  const trendingMoviesQuery = useGetTrendingMoviesQuery({ page: 1 }, { skip: !!searchQuery });
+  const upcomingMoviesForSectionQuery = useGetUpcomingMoviesQuery({ page: 1 }, { skip: !!searchQuery });
+  const trendingTVShowsQuery = useGetTrendingTVShowsQuery({ page: 1 }, { skip: !!searchQuery });
 
   const getCurrentQuery = () => {
     if (searchQuery && searchQuery.length >= 3) return searchQueryResult;
@@ -230,9 +239,7 @@ export default function Home() {
                   onPageChange={handlePageChange}
                   isLoading={isLoading}
                 />
-                <div className="text-center mt-4 text-sm text-gray-600 dark:text-gray-400">
-                  Showing page {currentPage} of {Math.min(data.total_pages, 500)} ({data.total_results.toLocaleString()} total results)
-                </div>
+           
               </>
             )}
           </>
@@ -251,6 +258,76 @@ export default function Home() {
           </div>
         )}
       </main>
+
+      {/* New Sections - Only show when not searching */}
+      {!searchQuery && (
+        <div className="bg-gray-50 dark:bg-gray-900">
+          <div className="max-w-7xl mx-auto px-4 py-12">
+            {/* Trending Movies Section */}
+            {trendingMoviesQuery.isLoading ? (
+              <section className="mb-12">
+                <div className="mb-6">
+                  <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+                    <span className="text-3xl">🔥</span>
+                    Trending Movies
+                  </h2>
+                </div>
+                <SkeletonLoader type="grid" count={10} />
+              </section>
+            ) : trendingMoviesQuery.data?.results && (
+              <MovieSection
+                title="Trending Movies"
+                movies={trendingMoviesQuery.data.results}
+                viewMoreLink="/trending"
+                emoji="🔥"
+                isLoading={trendingMoviesQuery.isLoading}
+              />
+            )}
+
+            {/* Upcoming Movies Section */}
+            {upcomingMoviesForSectionQuery.isLoading ? (
+              <section className="mb-12">
+                <div className="mb-6">
+                  <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+                    <span className="text-3xl">🎬</span>
+                    Upcoming Movies
+                  </h2>
+                </div>
+                <SkeletonLoader type="grid" count={10} />
+              </section>
+            ) : upcomingMoviesForSectionQuery.data?.results && (
+              <MovieSection
+                title="Upcoming Movies"
+                movies={upcomingMoviesForSectionQuery.data.results}
+                viewMoreLink="/upcoming"
+                emoji="🎬"
+                isLoading={upcomingMoviesForSectionQuery.isLoading}
+              />
+            )}
+
+            {/* Trending TV Shows Section */}
+            {trendingTVShowsQuery.isLoading ? (
+              <section className="mb-12">
+                <div className="mb-6">
+                  <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+                    <span className="text-3xl">📺</span>
+                    Trending TV Shows
+                  </h2>
+                </div>
+                <SkeletonLoader type="grid" count={10} />
+              </section>
+            ) : trendingTVShowsQuery.data?.results && (
+              <TVSection
+                title="Trending TV Shows"
+                shows={trendingTVShowsQuery.data.results}
+                viewMoreLink="/popular-tv"
+                emoji="📺"
+                isLoading={trendingTVShowsQuery.isLoading}
+              />
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

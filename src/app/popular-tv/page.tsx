@@ -72,9 +72,7 @@ export default function PopularTVShowsPage() {
                   onPageChange={handlePageChange}
                   isLoading={isLoading}
                 />
-                <div className="text-center mt-4 text-sm text-gray-600 dark:text-gray-400">
-                  Showing page {currentPage} of {Math.min(data.total_pages, 500)} ({data.total_results.toLocaleString()} total shows)
-                </div>
+              
               </>
             )}
           </>

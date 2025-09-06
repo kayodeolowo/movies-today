@@ -17,13 +17,16 @@ export const useFavorites = () => {
 
   // Load favorites from localStorage on mount and when refresh is triggered
   useEffect(() => {
+    console.log('Loading favorites from localStorage, refreshTrigger:', refreshTrigger);
     try {
       if (typeof window !== 'undefined') {
         const stored = localStorage.getItem(FAVORITES_KEY);
         if (stored) {
           const parsedFavorites = JSON.parse(stored);
+          console.log('Loaded favorites from localStorage:', parsedFavorites);
           setFavorites(parsedFavorites);
         } else {
+          console.log('No favorites found in localStorage');
           setFavorites([]);
         }
         setIsLoaded(true);
@@ -70,27 +73,34 @@ export const useFavorites = () => {
   }, [favorites, isLoaded]);
 
   const addToFavorites = (item: MediaItem, mediaType: 'movie' | 'tv') => {
-    const favoriteItem: FavoriteItem = {
-      ...item,
-      mediaType,
-      addedAt: new Date().toISOString(),
-    };
+    try {
+      const favoriteItem: FavoriteItem = {
+        ...item,
+        mediaType,
+        addedAt: new Date().toISOString(),
+      };
 
-    setFavorites(prev => {
-      // Check if already exists
-      if (prev.some(fav => fav.id === item.id && fav.mediaType === mediaType)) {
-        return prev;
-      }
-      
-      // Add new favorite at the beginning and limit to MAX_FAVORITES
-      const updated = [favoriteItem, ...prev];
-      return updated.slice(0, MAX_FAVORITES);
-    });
+      setFavorites(prev => {
+        // Check if already exists
+        if (prev.some(fav => fav.id === item.id && fav.mediaType === mediaType)) {
+          return prev;
+        }
+        
+        // Add new favorite at the beginning and limit to MAX_FAVORITES
+        const updated = [favoriteItem, ...prev];
+        return updated.slice(0, MAX_FAVORITES);
+      });
+    } catch (error) {
+      console.error('Error in addToFavorites:', error);
+    }
   };
 
   const removeFromFavorites = (id: number, mediaType: 'movie' | 'tv') => {
+    console.log('removeFromFavorites called for:', id, mediaType);
     setFavorites(prev => {
+      console.log('Previous favorites before removal:', prev);
       const filtered = prev.filter(fav => !(fav.id === id && fav.mediaType === mediaType));
+      console.log('Filtered favorites after removal:', filtered);
       return filtered;
     });
   };
@@ -100,16 +110,17 @@ export const useFavorites = () => {
   };
 
   const toggleFavorite = (item: MediaItem, mediaType: 'movie' | 'tv') => {
+    console.log('toggleFavorite called for:', item.id, mediaType);
     const isCurrentlyFavorite = isFavorite(item.id, mediaType);
+    console.log('isCurrentlyFavorite:', isCurrentlyFavorite);
     
     if (isCurrentlyFavorite) {
+      console.log('Removing from favorites');
       removeFromFavorites(item.id, mediaType);
     } else {
+      console.log('Adding to favorites');
       addToFavorites(item, mediaType);
     }
-    
-    // Trigger refresh to ensure immediate updates across components
-    setRefreshTrigger(prev => prev + 1);
   };
 
   return {

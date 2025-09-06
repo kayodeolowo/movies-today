@@ -277,6 +277,17 @@ export const moviesApi = createApi({
       query: ({ query, page = 1 }) => `search/movie?query=${encodeURIComponent(query)}&language=en-US&page=${page}`,
       keepUnusedDataFor: 60, // Cache search results for 1 minute
     }),
+    // Trending endpoints
+    getTrendingMovies: builder.query<MoviesResponse, { page?: number }>({
+      query: ({ page = 1 } = {}) => `trending/movie/day?language=en-US&page=${page}`,
+      providesTags: ['Movie'],
+      keepUnusedDataFor: 300,
+    }),
+    getTrendingTVShows: builder.query<TVShowsResponse, { page?: number }>({
+      query: ({ page = 1 } = {}) => `trending/tv/day?language=en-US&page=${page}`,
+      providesTags: ['Movie'],
+      keepUnusedDataFor: 300,
+    }),
   }),
 });
 
@@ -298,4 +309,6 @@ export const {
   useGetMovieVideosQuery,
   useGetSimilarMoviesQuery,
   useSearchMoviesQuery,
+  useGetTrendingMoviesQuery,
+  useGetTrendingTVShowsQuery,
 } = moviesApi;

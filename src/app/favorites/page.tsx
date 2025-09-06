@@ -5,6 +5,7 @@ import MovieCard from "../../components/MovieCard";
 
 export default function FavoritesPage() {
   const { favorites } = useFavorites();
+  console.log('FavoritesPage render - favorites count:', favorites.length);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
