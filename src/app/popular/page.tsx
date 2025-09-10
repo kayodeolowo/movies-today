@@ -30,7 +30,7 @@ export default function PopularMoviesPage() {
             </span>
           </div>
           <p className="mt-2 text-gray-600 dark:text-gray-400">
-            The most popular movies that everyone's watching
+            The most popular movies that everyone&apos;s watching
           </p>
         </div>
       </header>

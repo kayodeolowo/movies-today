@@ -26,7 +26,7 @@ export default function TopRatedTVShowsPage() {
               🏆 Top Rated TV Shows
             </h1>
             <span className="bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 px-3 py-1 rounded-full text-sm font-medium">
-              Critics' Choice
+              Critic&apos;s Choice
             </span>
           </div>
           <p className="mt-2 text-gray-600 dark:text-gray-400">

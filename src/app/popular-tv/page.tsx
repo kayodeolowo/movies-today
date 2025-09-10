@@ -30,7 +30,7 @@ export default function PopularTVShowsPage() {
             </span>
           </div>
           <p className="mt-2 text-gray-600 dark:text-gray-400">
-            The most popular TV shows everyone's watching
+            The most popular TV shows everyone&apos;s watching
           </p>
         </div>
       </header>
