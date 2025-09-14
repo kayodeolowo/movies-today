@@ -16,7 +16,7 @@ export default function MovieSection({
   movies, 
   viewMoreLink, 
   emoji, 
-  isLoading = false 
+
 }: MovieSectionProps) {
   return (
     <section className="mb-12">

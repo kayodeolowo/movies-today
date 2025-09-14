@@ -36,13 +36,12 @@ interface MovieCardProps {
 
 export default function MovieCard({ item, mediaType, onClick }: MovieCardProps) {
   const { isFavorite, toggleFavorite } = useFavorites();
+  const [imageError, setImageError] = useState(false);
 
   // Guard against undefined/null item
   if (!item) {
     return null;
   }
-
-  const [imageError, setImageError] = useState(false);
   const imageUrl = item.poster_path
     ? `https://image.tmdb.org/t/p/w780${item.poster_path}`
     : null;

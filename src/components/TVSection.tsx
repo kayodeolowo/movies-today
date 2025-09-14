@@ -16,7 +16,6 @@ export default function TVSection({
   shows, 
   viewMoreLink, 
   emoji, 
-  isLoading = false 
 }: TVSectionProps) {
   return (
     <section className="mb-12">

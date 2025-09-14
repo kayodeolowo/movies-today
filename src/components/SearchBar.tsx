@@ -33,10 +33,7 @@ export default function SearchBar({ onSearch, onClear, currentQuery = "", placeh
     }
   };
 
-  const handleClear = () => {
-    setQuery("");
-    onClear();
-  };
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
