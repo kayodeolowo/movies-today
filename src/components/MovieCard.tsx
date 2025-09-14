@@ -96,7 +96,7 @@ export default function MovieCard({ item, mediaType, onClick }: MovieCardProps) 
               alt={title}
               width={200}
               height={300}
-              className="h-40 object-cover w-full transition-transform duration-300 group-hover:scale-110"
+              className="h-[15rem] lg:h-40 object-cover w-full transition-transform duration-300 group-hover:scale-110"
               onError={handleImageError}
             />
           ) : (
@@ -145,7 +145,7 @@ export default function MovieCard({ item, mediaType, onClick }: MovieCardProps) 
               alt={title}
               width={200}
               height={300}
-              className="h-40 object-cover w-full transition-transform duration-300 group-hover:scale-110"
+              className="h-[15rem] lg:h-40 object-cover w-full transition-transform duration-300 group-hover:scale-110"
               onError={handleImageError}
             />
           ) : (
