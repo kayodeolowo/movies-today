@@ -5,7 +5,25 @@ import { MediaItem } from '../features/movies/moviesSlice';
 const RECENTLY_VIEWED_KEY = 'movies-today-recently-viewed';
 const MAX_RECENTLY_VIEWED = 50; // Limit to last 50 items
 
-export interface RecentlyViewedItem extends MediaItem {
+export interface RecentlyViewedItem {
+  id: number;
+  title?: string; // for movies
+  name?: string; // for tv shows
+  overview: string;
+  poster_path: string | null;
+  release_date?: string; // for movies
+  first_air_date?: string; // for tv shows
+  vote_average: number;
+  backdrop_path: string | null;
+  genre_ids: number[];
+  adult: boolean;
+  original_language: string;
+  original_title?: string; // for movies
+  original_name?: string; // for tv shows
+  popularity: number;
+  video?: boolean; // for movies
+  vote_count: number;
+  origin_country?: string[]; // for tv shows
   mediaType: 'movie' | 'tv';
   viewedAt: string;
 }
@@ -44,9 +62,31 @@ export const useRecentlyViewed = () => {
 
   const addToRecentlyViewed = useCallback((item: MediaItem, mediaType: 'movie' | 'tv') => {
     const viewedItem: RecentlyViewedItem = {
-      ...item,
+      id: item.id,
+      overview: item.overview,
+      poster_path: item.poster_path,
+      vote_average: item.vote_average,
+      backdrop_path: item.backdrop_path,
+      genre_ids: item.genre_ids,
+      adult: item.adult,
+      original_language: item.original_language,
+      popularity: item.popularity,
+      vote_count: item.vote_count,
       mediaType,
       viewedAt: new Date().toISOString(),
+      // Conditional properties based on media type
+      ...(mediaType === 'movie' && 'title' in item ? {
+        title: item.title,
+        release_date: item.release_date,
+        original_title: item.original_title,
+        video: item.video,
+      } : {}),
+      ...(mediaType === 'tv' && 'name' in item ? {
+        name: item.name,
+        first_air_date: item.first_air_date,
+        original_name: item.original_name,
+        origin_country: item.origin_country,
+      } : {}),
     };
 
     setRecentlyViewed(prev => {

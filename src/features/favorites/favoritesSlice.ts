@@ -1,7 +1,25 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { MediaItem } from '../movies/moviesSlice';
 
-export interface FavoriteItem extends MediaItem {
+export interface FavoriteItem {
+  id: number;
+  title?: string; 
+  name?: string; 
+  overview: string;
+  poster_path: string | null;
+  release_date?: string; 
+  first_air_date?: string; 
+  vote_average: number;
+  backdrop_path: string | null;
+  genre_ids: number[];
+  adult: boolean;
+  original_language: string;
+  original_title?: string; 
+  original_name?: string; 
+  popularity: number;
+  video?: boolean; 
+  vote_count: number;
+  origin_country?: string[]; 
   mediaType: 'movie' | 'tv';
   addedAt: string;
 }
@@ -45,9 +63,31 @@ const favoritesSlice = createSlice({
       if (exists) return;
 
       const favoriteItem: FavoriteItem = {
-        ...item,
+        id: item.id,
+        overview: item.overview,
+        poster_path: item.poster_path,
+        vote_average: item.vote_average,
+        backdrop_path: item.backdrop_path,
+        genre_ids: item.genre_ids,
+        adult: item.adult,
+        original_language: item.original_language,
+        popularity: item.popularity,
+        vote_count: item.vote_count,
         mediaType,
         addedAt: new Date().toISOString(),
+        // Conditional properties based on media type
+        ...(mediaType === 'movie' && 'title' in item ? {
+          title: item.title,
+          release_date: item.release_date,
+          original_title: item.original_title,
+          video: item.video,
+        } : {}),
+        ...(mediaType === 'tv' && 'name' in item ? {
+          name: item.name,
+          first_air_date: item.first_air_date,
+          original_name: item.original_name,
+          origin_country: item.origin_country,
+        } : {}),
       };
 
       // Add new favorite at the beginning and limit to MAX_FAVORITES
@@ -91,4 +131,3 @@ const favoritesSlice = createSlice({
 
 export const { loadFavorites, addFavorite, removeFavorite, clearFavorites } = favoritesSlice.actions;
 export default favoritesSlice.reducer;
-export type { FavoriteItem };

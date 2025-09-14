@@ -6,6 +6,28 @@ import { MediaItem } from '../features/movies/moviesSlice';
 import { loadFavorites, addFavorite, removeFavorite } from '../features/favorites/favoritesSlice';
 import type { FavoriteItem } from '../features/favorites/favoritesSlice';
 
+// Type for items that can be added to favorites
+type FavoriteableItem = MediaItem | {
+  id: number;
+  title?: string;
+  name?: string;
+  overview: string;
+  poster_path: string | null;
+  release_date?: string;
+  first_air_date?: string;
+  vote_average: number;
+  backdrop_path: string | null;
+  genre_ids: number[];
+  adult: boolean;
+  original_language: string;
+  original_title?: string;
+  original_name?: string;
+  popularity: number;
+  video?: boolean;
+  vote_count: number;
+  origin_country?: string[];
+};
+
 export { FavoriteItem };
 
 export const useFavorites = () => {
@@ -19,8 +41,8 @@ export const useFavorites = () => {
     }
   }, [dispatch, isLoaded]);
 
-  const addToFavorites = (item: MediaItem, mediaType: 'movie' | 'tv') => {
-    dispatch(addFavorite({ item, mediaType }));
+  const addToFavorites = (item: FavoriteableItem, mediaType: 'movie' | 'tv') => {
+    dispatch(addFavorite({ item: item as MediaItem, mediaType }));
   };
 
   const removeFromFavorites = (id: number, mediaType: 'movie' | 'tv') => {
@@ -31,7 +53,7 @@ export const useFavorites = () => {
     return favorites.some(fav => fav.id === id && fav.mediaType === mediaType);
   };
 
-  const toggleFavorite = (item: MediaItem, mediaType: 'movie' | 'tv') => {
+  const toggleFavorite = (item: FavoriteableItem, mediaType: 'movie' | 'tv') => {
     const isCurrentlyFavorite = isFavorite(item.id, mediaType);
     
     if (isCurrentlyFavorite) {

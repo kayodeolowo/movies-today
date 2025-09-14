@@ -20,8 +20,8 @@ export default function PopularTVShowsPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex items-center space-x-3">
+        <div className="w-fit mx-auto px-4 py-6">
+          <div className="flex  items-center space-x-3">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
               📺 Popular TV Shows
             </h1>

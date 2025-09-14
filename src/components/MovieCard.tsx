@@ -6,8 +6,30 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { Movie, TVShow, MediaItem } from "../features/movies/moviesSlice";
 import { useFavorites } from "../hooks/useFavorites";
 
+// Union type for all possible item types
+type MovieCardItem = MediaItem | {
+  id: number;
+  title?: string;
+  name?: string;
+  overview: string;
+  poster_path: string | null;
+  release_date?: string;
+  first_air_date?: string;
+  vote_average: number;
+  backdrop_path: string | null;
+  genre_ids: number[];
+  adult: boolean;
+  original_language: string;
+  original_title?: string;
+  original_name?: string;
+  popularity: number;
+  video?: boolean;
+  vote_count: number;
+  origin_country?: string[];
+};
+
 interface MovieCardProps {
-  item: MediaItem | null | undefined;
+  item: MovieCardItem | null | undefined;
   mediaType: 'movie' | 'tv';
   onClick?: (id: number) => void;
 }
@@ -25,8 +47,12 @@ export default function MovieCard({ item, mediaType, onClick }: MovieCardProps) 
     ? `https://image.tmdb.org/t/p/w780${item.poster_path}`
     : null;
   
-  const title = mediaType === 'movie' ? (item as Movie).title : (item as TVShow).name;
-  const releaseDate = mediaType === 'movie' ? (item as Movie).release_date : (item as TVShow).first_air_date;
+  const title = mediaType === 'movie' 
+    ? ('title' in item ? item.title : (item as Movie).title)
+    : ('name' in item ? item.name : (item as TVShow).name);
+  const releaseDate = mediaType === 'movie' 
+    ? ('release_date' in item ? item.release_date : (item as Movie).release_date)
+    : ('first_air_date' in item ? item.first_air_date : (item as TVShow).first_air_date);
   const linkHref = mediaType === 'movie' ? `/movie/${item.id}` : `/tv/${item.id}`;
   const isItemFavorite = isFavorite(item.id, mediaType);
 
