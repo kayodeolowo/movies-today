@@ -1,4 +1,5 @@
 "use client";
+import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 
 interface PaginationProps {
   currentPage: number;
@@ -50,8 +51,9 @@ export default function Pagination({ currentPage, totalPages, onPageChange, isLo
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1 || isLoading}
         className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
+        aria-label="Previous page"
       >
-        Previous
+        <MdChevronLeft className="w-5 h-5" />
       </button>
 
       {/* Page Numbers */}
@@ -93,8 +95,9 @@ export default function Pagination({ currentPage, totalPages, onPageChange, isLo
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages || isLoading}
         className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
+        aria-label="Next page"
       >
-        Next
+        <MdChevronRight className="w-5 h-5" />
       </button>
     </div>
   );

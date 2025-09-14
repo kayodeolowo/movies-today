@@ -29,7 +29,24 @@ export default function MovieDetailsPage() {
   // Add to recently viewed when movie details are loaded
   useEffect(() => {
     if (movieDetails) {
-      addToRecentlyViewed(movieDetails, 'movie');
+      // Convert MovieDetails to MediaItem format
+      const mediaItem = {
+        id: movieDetails.id,
+        title: movieDetails.title,
+        overview: movieDetails.overview,
+        poster_path: movieDetails.poster_path,
+        release_date: movieDetails.release_date,
+        vote_average: movieDetails.vote_average,
+        backdrop_path: movieDetails.backdrop_path,
+        genre_ids: movieDetails.genres?.map(genre => genre.id) || [],
+        adult: movieDetails.adult,
+        original_language: movieDetails.original_language,
+        original_title: movieDetails.original_title,
+        popularity: movieDetails.popularity,
+        video: movieDetails.video,
+        vote_count: movieDetails.vote_count,
+      };
+      addToRecentlyViewed(mediaItem, 'movie');
     }
   }, [movieDetails, addToRecentlyViewed]);
 
@@ -69,7 +86,7 @@ export default function MovieDetailsPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Back Button */}
       <div className="sticky top-0 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-6xl mx-auto px-4 py-4">
+        <div className="max-w-7xl mx-auto px-4 py-4">
           <Link
             href="/"
             className="inline-flex items-center text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
@@ -99,7 +116,7 @@ export default function MovieDetailsPage() {
         
         {/* Movie Info Overlay */}
         <div className="absolute bottom-8 left-8 right-8 text-white">
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <h1 className="text-4xl md:text-6xl font-bold mb-4">{movieDetails.title}</h1>
             {movieDetails.tagline && (
               <p className="text-xl md:text-2xl text-gray-200 italic mb-4">{movieDetails.tagline}</p>
@@ -118,7 +135,7 @@ export default function MovieDetailsPage() {
       </div>
 
       {/* Content */}
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Poster */}
           <div className="lg:col-span-1">
@@ -276,7 +293,7 @@ export default function MovieDetailsPage() {
              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
               {similarMovies.results
                 .filter(movie => movie && movie.id) // Filter out null/undefined items
-                .slice(0, 12)
+                .slice(0, 10)
                 .map((movie) => (
                   <MovieCard 
                     key={movie.id} 

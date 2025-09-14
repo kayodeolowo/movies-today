@@ -3,7 +3,7 @@ export default function SkeletonLoader({ type = "grid", count = 12 }: { type?: "
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 animate-pulse">
         <div className="h-[40vh] bg-gray-300 dark:bg-gray-700"></div>
-        <div className="max-w-6xl mx-auto px-4 py-8">
+        <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             <div className="lg:col-span-1">
               <div className="aspect-[2/3] bg-gray-300 dark:bg-gray-700 rounded-lg"></div>

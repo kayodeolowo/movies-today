@@ -53,9 +53,9 @@ export default function MediaFilters({
   };
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-      {/* Media Type Dropdown */}
-      <div className="w-full sm:w-48">
+    <div className="flex flex-col lg:flex-row items-center gap-4 w-full">
+      {/* Media Type Dropdown - 50% of the filters container (25% of screen) */}
+      <div className="w-full lg:w-1/2">
         <Dropdown
           options={mediaTypeOptions}
           value={mediaType}
@@ -65,8 +65,8 @@ export default function MediaFilters({
         />
       </div>
 
-      {/* Category Dropdown */}
-      <div className="w-full sm:w-52">
+      {/* Category Dropdown - 50% of the filters container (25% of screen) */}
+      <div className="w-full lg:w-1/2">
         <Dropdown
           options={currentCategories}
           value={activeCategory}

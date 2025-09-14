@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
@@ -19,9 +20,10 @@ export default function MovieCard({ item, mediaType, onClick }: MovieCardProps) 
     return null;
   }
 
+  const [imageError, setImageError] = useState(false);
   const imageUrl = item.poster_path
     ? `https://image.tmdb.org/t/p/w780${item.poster_path}`
-    : "/placeholder-movie.jpg";
+    : null;
   
   const title = mediaType === 'movie' ? (item as Movie).title : (item as TVShow).name;
   const releaseDate = mediaType === 'movie' ? (item as Movie).release_date : (item as TVShow).first_air_date;
@@ -39,6 +41,21 @@ export default function MovieCard({ item, mediaType, onClick }: MovieCardProps) 
     toggleFavorite(item, mediaType);
   };
 
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
+  const DefaultImagePlaceholder = () => (
+    <div className="h-40 bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-700 dark:to-gray-800 flex flex-col items-center justify-center text-gray-600 dark:text-gray-300">
+      <svg className="w-12 h-12 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m0 0V3a1 1 0 011 1v15a1 1 0 01-1 1H8a1 1 0 01-1-1V4zm0 0H7m10 0h3a1 1 0 011 1v15a1 1 0 01-1 1h-3m-7 0h7" />
+      </svg>
+      <span className="text-xs text-center px-2 opacity-75">
+        {mediaType === 'movie' ? 'Movie' : 'TV Show'} Poster
+      </span>
+    </div>
+  );
+
   
   if (onClick) {
     return (
@@ -48,13 +65,18 @@ export default function MovieCard({ item, mediaType, onClick }: MovieCardProps) 
       >
       <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg">
         <div className="relative overflow-hidden">
-          <Image
-            src={imageUrl}
-            alt={title}
-            width={200}
-            height={300}
-            className="h-40 object-cover w-full transition-transform duration-300 group-hover:scale-110"
-          />
+          {imageUrl && !imageError ? (
+            <Image
+              src={imageUrl}
+              alt={title}
+              width={200}
+              height={300}
+              className="h-40 object-cover w-full transition-transform duration-300 group-hover:scale-110"
+              onError={handleImageError}
+            />
+          ) : (
+            <DefaultImagePlaceholder />
+          )}
           
           {/* Favorite button */}
           <button
@@ -92,13 +114,18 @@ export default function MovieCard({ item, mediaType, onClick }: MovieCardProps) 
     <Link href={linkHref} className="group cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-2xl block">
       <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg">
         <div className="relative overflow-hidden">
-          <Image
-            src={imageUrl}
-            alt={title}
-            width={200}
-            height={300}
-            className="h-40 object-cover w-full transition-transform duration-300 group-hover:scale-110"
-          />
+          {imageUrl && !imageError ? (
+            <Image
+              src={imageUrl}
+              alt={title}
+              width={200}
+              height={300}
+              className="h-40 object-cover w-full transition-transform duration-300 group-hover:scale-110"
+              onError={handleImageError}
+            />
+          ) : (
+            <DefaultImagePlaceholder />
+          )}
           
           {/* Favorite button */}
           <button

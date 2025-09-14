@@ -29,7 +29,24 @@ export default function TVShowDetailsPage() {
   // Add to recently viewed when TV show details are loaded
   useEffect(() => {
     if (tvShowDetails) {
-      addToRecentlyViewed(tvShowDetails, 'tv');
+      // Convert TVShowDetails to MediaItem format
+      const mediaItem = {
+        id: tvShowDetails.id,
+        name: tvShowDetails.name,
+        overview: tvShowDetails.overview,
+        poster_path: tvShowDetails.poster_path,
+        first_air_date: tvShowDetails.first_air_date,
+        vote_average: tvShowDetails.vote_average,
+        backdrop_path: tvShowDetails.backdrop_path,
+        genre_ids: tvShowDetails.genres?.map(genre => genre.id) || [],
+        adult: tvShowDetails.adult,
+        original_language: tvShowDetails.original_language,
+        original_name: tvShowDetails.original_name,
+        popularity: tvShowDetails.popularity,
+        vote_count: tvShowDetails.vote_count,
+        origin_country: tvShowDetails.origin_country || [],
+      };
+      addToRecentlyViewed(mediaItem, 'tv');
     }
   }, [tvShowDetails, addToRecentlyViewed]);
 
@@ -71,7 +88,7 @@ export default function TVShowDetailsPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Back Button */}
       <div className="sticky top-0 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-6xl mx-auto px-4 py-4">
+        <div className="max-w-7xl mx-auto px-4 py-4">
           <Link
             href="/"
             className="inline-flex items-center text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
@@ -101,7 +118,7 @@ export default function TVShowDetailsPage() {
         
         {/* TV Show Info Overlay */}
         <div className="absolute bottom-8 left-8 right-8 text-white">
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <h1 className="text-4xl md:text-6xl font-bold mb-4">{tvShowDetails.name}</h1>
             {tvShowDetails.tagline && (
               <p className="text-xl md:text-2xl text-gray-200 italic mb-4">{tvShowDetails.tagline}</p>
@@ -121,7 +138,7 @@ export default function TVShowDetailsPage() {
       </div>
 
       {/* Content */}
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Poster */}
           <div className="lg:col-span-1">
@@ -295,7 +312,7 @@ export default function TVShowDetailsPage() {
              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
               {similarTVShows.results
                 .filter(tvShow => tvShow && tvShow.id) // Filter out null/undefined items
-                .slice(0, 12)
+                .slice(0, 10)
                 .map((tvShow) => (
                   <MovieCard 
                     key={tvShow.id} 

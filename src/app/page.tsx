@@ -142,16 +142,18 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Hero Carousel Section */}
-      {!searchQuery && heroCarouselQuery.data?.results && (
+      {!searchQuery && (
         <section className="bg-gray-900">
           <div className="max-w-7xl mx-auto px-4 py-8">
             <HeroCarousel 
               movies={
-                heroCarouselQuery.data.results
-                  .filter(movie => movie.backdrop_path !== null && movie.backdrop_path !== undefined)
-                  .slice(0, 8)
-                  .slice(0, 5)
-              } 
+                heroCarouselQuery.data?.results
+                  ? heroCarouselQuery.data.results
+                      .filter(movie => movie.backdrop_path !== null && movie.backdrop_path !== undefined)
+                      .slice(0, 5)
+                  : []
+              }
+              isLoading={heroCarouselQuery.isLoading}
             />
           </div>
         </section>
@@ -161,9 +163,9 @@ export default function Home() {
       <header className="">
         <div className="max-w-7xl mx-auto px-4 py-6">
           {/* Search and Filters Row */}
-          <div className="flex flex-col lg:flex-row items-center gap-6">
-            {/* Search Bar - Takes up most of the space */}
-            <div className="w-full lg:flex-1">
+          <div className="flex flex-col lg:flex-row items-center gap-6 w-full">
+            {/* Search Bar - Takes 50% on large screens */}
+            <div className="w-full lg:w-1/2">
               <SearchBar 
                 onSearch={handleSearch} 
                 onClear={handleClearSearch}
@@ -172,9 +174,9 @@ export default function Home() {
               />
             </div>
             
-            {/* Filters */}
+            {/* Filters - Take 50% combined on large screens */}
             {!searchQuery && (
-              <div className="w-full lg:w-auto lg:flex-shrink-0">
+              <div className="w-full lg:w-1/2">
                 <MediaFilters 
                   mediaType={mediaType}
                   movieCategory={movieCategory}

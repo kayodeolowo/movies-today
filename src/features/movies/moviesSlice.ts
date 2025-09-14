@@ -106,8 +106,15 @@ export interface SpokenLanguage {
   name: string;
 }
 
+export interface Collection {
+  id: number;
+  name: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+}
+
 export interface MovieDetails extends Omit<Movie, 'genre_ids'> {
-  belongs_to_collection: any;
+  belongs_to_collection: Collection | null;
   budget: number;
   genres: Genre[];
   homepage: string;

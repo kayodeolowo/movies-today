@@ -3,11 +3,12 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRecentlyViewed } from "../../hooks/useRecentlyViewed";
 import MovieCard from "../../components/MovieCard";
+import SkeletonLoader from "../../components/LoadingSpinner";
 
 type FilterType = 'all' | 'movie' | 'tv';
 
 export default function RecentlyViewedPage() {
-  const { recentlyViewed, clearRecentlyViewed } = useRecentlyViewed();
+  const { recentlyViewed, clearRecentlyViewed, isLoaded } = useRecentlyViewed();
   const [filter, setFilter] = useState<FilterType>('all');
 
   const filteredItems = recentlyViewed.filter(item => 
@@ -33,10 +34,28 @@ export default function RecentlyViewedPage() {
     }
   };
 
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <main className="max-w-7xl mx-auto px-4 py-8">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-white">Recently Viewed</h1>
+            <div className="mb-8 w-fit mx-auto">
+              <div className="flex space-x-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg w-fit">
+                <div className="px-4 py-2 text-sm font-medium bg-gray-200 dark:bg-gray-600 rounded-md animate-pulse h-8 w-16"></div>
+                <div className="px-4 py-2 text-sm font-medium bg-gray-200 dark:bg-gray-600 rounded-md animate-pulse h-8 w-20"></div>
+                <div className="px-4 py-2 text-sm font-medium bg-gray-200 dark:bg-gray-600 rounded-md animate-pulse h-8 w-24"></div>
+              </div>
+            </div>
+          </div>
+          <SkeletonLoader type="grid" count={12} />
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-     
-
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-8">
         {recentlyViewed.length === 0 ? (
@@ -64,6 +83,7 @@ export default function RecentlyViewedPage() {
           </div>
         ) : (
           <>
+            <h1 className="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-white">Recently Viewed</h1>
             {/* Filter tabs */}
             <div className="mb-8 w-fit mx-auto">
               <div className="flex space-x-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
