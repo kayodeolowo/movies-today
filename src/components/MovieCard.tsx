@@ -3,36 +3,9 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import { Movie, TVShow, MediaItem } from "../features/movies/moviesSlice";
+import { Movie, TVShow } from "../features/movies/moviesSlice";
 import { useFavorites } from "../hooks/useFavorites";
-
-// Union type for all possible item types
-type MovieCardItem = MediaItem | {
-  id: number;
-  title?: string;
-  name?: string;
-  overview: string;
-  poster_path: string | null;
-  release_date?: string;
-  first_air_date?: string;
-  vote_average: number;
-  backdrop_path: string | null;
-  genre_ids: number[];
-  adult: boolean;
-  original_language: string;
-  original_title?: string;
-  original_name?: string;
-  popularity: number;
-  video?: boolean;
-  vote_count: number;
-  origin_country?: string[];
-};
-
-interface MovieCardProps {
-  item: MovieCardItem | null | undefined;
-  mediaType: 'movie' | 'tv';
-  onClick?: (id: number) => void;
-}
+import { MovieCardItem, MovieCardProps } from "../types/movieCard";
 
 export default function MovieCard({ item, mediaType, onClick }: MovieCardProps) {
   const { isFavorite, toggleFavorite } = useFavorites();
@@ -71,7 +44,7 @@ export default function MovieCard({ item, mediaType, onClick }: MovieCardProps) 
   };
 
   const DefaultImagePlaceholder = () => (
-    <div className="h-[15rem] lg:h-40 bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-700 dark:to-gray-800 flex flex-col items-center justify-center text-gray-600 dark:text-gray-300">
+    <div className="h-[10rem] lg:h-40 bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-700 dark:to-gray-800 flex flex-col items-center justify-center text-gray-600 dark:text-gray-300">
       <svg className="w-12 h-12 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m0 0V3a1 1 0 011 1v15a1 1 0 01-1 1H8a1 1 0 01-1-1V4zm0 0H7m10 0h3a1 1 0 011 1v15a1 1 0 01-1 1h-3m-7 0h7" />
       </svg>
@@ -96,7 +69,7 @@ export default function MovieCard({ item, mediaType, onClick }: MovieCardProps) 
               alt={title}
               width={200}
               height={300}
-              className="h-[15rem] lg:h-40 object-cover w-full transition-transform duration-300 group-hover:scale-110"
+              className="h-[10rem] lg:h-40 object-cover w-full transition-transform duration-300 group-hover:scale-110"
               onError={handleImageError}
             />
           ) : (
@@ -120,8 +93,8 @@ export default function MovieCard({ item, mediaType, onClick }: MovieCardProps) 
             )}
           </button>
         </div>
-        <div className="p-4 min-h-[7rem] sm:min-h-[5rem]">
-         <div className="flex justify-between items-center mb-2">
+        <div className="p-4 min-h-[6rem]  sm:min-h-[5rem]">
+         <div className="flex justify-between  items-center mb-2">
             <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
             {releaseDate ? new Date(releaseDate).getFullYear() : 'N/A'}
           </p>
@@ -186,7 +159,7 @@ export default function MovieCard({ item, mediaType, onClick }: MovieCardProps) 
          </div>
 
 
-           <h3 className="font-semibold line-clamp-2 text-base  text-gray-900 dark:text-white" title={title}>
+           <h3 className="text-sm  font-semibold line-clamp-2 md:text-base  text-gray-900 dark:text-white" title={title}>
             {title}
           </h3>
         </div>
