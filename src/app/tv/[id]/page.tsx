@@ -123,7 +123,7 @@ export default function TVShowDetailsPage() {
             {tvShowDetails.tagline && (
               <p className="text-xl md:text-2xl text-gray-200 italic mb-4">{tvShowDetails.tagline}</p>
             )}
-            <div className="flex flex-wrap gap-6 text-lg">
+            <div className="flex flex-wrap gap-3 sm:gap-6 text-lg">
               <span className={`flex items-center ${tvShowDetails.vote_average >= 5.0 ? 'text-green-400' : 'text-red-400'}`}>
                 ⭐ {tvShowDetails.vote_average.toFixed(1)} ({tvShowDetails.vote_count.toLocaleString()} votes)
               </span>
@@ -246,7 +246,7 @@ export default function TVShowDetailsPage() {
             )}
 
             {/* TV Show Details */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
               <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white col-span-full">Show Details</h3>
               
               <div>
@@ -309,7 +309,7 @@ export default function TVShowDetailsPage() {
         {similarTVShows?.results && similarTVShows.results.length > 0 && (
           <div className="mt-12">
             <h3 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">You Might Also Like</h3>
-             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-6">
               {similarTVShows.results
                 .filter(tvShow => tvShow && tvShow.id) // Filter out null/undefined items
                 .slice(0, 10)

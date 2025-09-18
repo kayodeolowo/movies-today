@@ -71,7 +71,7 @@ export default function MovieCard({ item, mediaType, onClick }: MovieCardProps) 
   };
 
   const DefaultImagePlaceholder = () => (
-    <div className="h-40 bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-700 dark:to-gray-800 flex flex-col items-center justify-center text-gray-600 dark:text-gray-300">
+    <div className="h-[15rem] lg:h-40 bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-700 dark:to-gray-800 flex flex-col items-center justify-center text-gray-600 dark:text-gray-300">
       <svg className="w-12 h-12 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m0 0V3a1 1 0 011 1v15a1 1 0 01-1 1H8a1 1 0 01-1-1V4zm0 0H7m10 0h3a1 1 0 011 1v15a1 1 0 01-1 1h-3m-7 0h7" />
       </svg>
@@ -103,6 +103,11 @@ export default function MovieCard({ item, mediaType, onClick }: MovieCardProps) 
             <DefaultImagePlaceholder />
           )}
           
+          {/* Language badge */}
+          <div className="absolute top-2 left-2 bg-blue-500/90 text-white text-xs px-2 py-1 rounded-full uppercase font-medium">
+            {item.original_language}
+          </div>
+
           {/* Favorite button */}
           <button
             onClick={handleFavoriteClick}
@@ -115,15 +120,16 @@ export default function MovieCard({ item, mediaType, onClick }: MovieCardProps) 
             )}
           </button>
         </div>
-        <div className="p-4">
+        <div className="p-4 min-h-[7rem] sm:min-h-[5rem]">
          <div className="flex justify-between items-center mb-2">
             <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
             {releaseDate ? new Date(releaseDate).getFullYear() : 'N/A'}
           </p>
           <div className={`px-2 py-1 rounded-full text-sm font-semibold ${item.vote_average >= 5.0 ? 'text-green-500' : 'text-red-500'}`}>
-            ⭐ {item.vote_average.toFixed(1)}/10
+            ⭐ {item.vote_average.toFixed(1)}/10 ({item.vote_count})
           </div>
          </div>
+
 
            <h3 className="font-semibold truncate text-base  text-gray-900 dark:text-white" title={title}>
             {title}
@@ -145,13 +151,18 @@ export default function MovieCard({ item, mediaType, onClick }: MovieCardProps) 
               alt={title}
               width={200}
               height={300}
-              className="h-[15rem] lg:h-40 object-cover w-full transition-transform duration-300 group-hover:scale-110"
+              className="h-[10rem] lg:h-40 object-cover w-full transition-transform duration-300 group-hover:scale-110"
               onError={handleImageError}
             />
           ) : (
             <DefaultImagePlaceholder />
           )}
           
+          {/* Language badge */}
+          <div className="absolute top-2 left-2 bg-blue-500/90 text-white text-xs px-2 py-1 rounded-full uppercase font-medium">
+            {item.original_language}
+          </div>
+
           {/* Favorite button */}
           <button
             onClick={handleFavoriteClick}
@@ -164,17 +175,18 @@ export default function MovieCard({ item, mediaType, onClick }: MovieCardProps) 
             )}
           </button>
         </div>
-        <div className="p-4">
+        <div className="p-2 min-h-[6rem] sm:min-h-[6.2rem]">
          <div className="flex justify-between items-center mb-2">
-            <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+            <p className="text-sm text-gray-600 dark:text-gray-300 ">
             {releaseDate ? new Date(releaseDate).getFullYear() : 'N/A'}
           </p>
           <div className={`px-2 py-1 rounded-full text-sm font-semibold ${item.vote_average >= 5.0 ? 'text-green-500' : 'text-red-500'}`}>
-            ⭐ {item.vote_average.toFixed(1)}/10
+            ⭐ {item.vote_average.toFixed(1)}/10 <span className="max-md:hidden">({item.vote_count})</span>
           </div>
          </div>
 
-           <h3 className="font-semibold truncate text-base  text-gray-900 dark:text-white" title={title}>
+
+           <h3 className="font-semibold line-clamp-2 text-base  text-gray-900 dark:text-white" title={title}>
             {title}
           </h3>
         </div>

@@ -37,11 +37,11 @@ export default function SkeletonLoader({ type = "grid", count = 12 }: { type?: "
 
   return (
     <div className="animate-pulse">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-6">
         {Array.from({ length: count }).map((_, index) => (
           <div key={index} className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg">
             {/* Image skeleton */}
-            <div className="h-40 bg-gray-300 dark:bg-gray-700"></div>
+            <div className="h-[15rem] lg:h-40 bg-gray-300 dark:bg-gray-700"></div>
             {/* Content skeleton */}
             <div className="p-4 space-y-2">
               {/* Year and rating row */}

@@ -121,7 +121,7 @@ export default function MovieDetailsModal({ movieId, isOpen, onClose }: MovieDet
 
               {/* Content */}
               <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-6">
                   {/* Poster */}
                   <div className="md:col-span-1">
                     {movieDetails.poster_path ? (

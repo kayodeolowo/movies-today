@@ -121,7 +121,7 @@ export default function MovieDetailsPage() {
             {movieDetails.tagline && (
               <p className="text-xl md:text-2xl text-gray-200 italic mb-4">{movieDetails.tagline}</p>
             )}
-            <div className="flex flex-wrap gap-6 text-lg">
+            <div className="flex flex-wrap gap-3 sm:gap-6 text-lg">
               <span className={`flex items-center ${movieDetails.vote_average >= 5.0 ? 'text-green-400' : 'text-red-400'}`}>
                 ⭐ {movieDetails.vote_average.toFixed(1)} ({movieDetails.vote_count.toLocaleString()} votes)
               </span>
@@ -235,7 +235,7 @@ export default function MovieDetailsPage() {
             )}
 
             {/* Additional Info */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
               <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white col-span-full">Movie Details</h3>
               
               {movieDetails.budget > 0 && (
@@ -290,7 +290,7 @@ export default function MovieDetailsPage() {
         {similarMovies?.results && similarMovies.results.length > 0 && (
           <div className="mt-12">
             <h3 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">You Might Also Like</h3>
-             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-6">
               {similarMovies.results
                 .filter(movie => movie && movie.id) // Filter out null/undefined items
                 .slice(0, 10)

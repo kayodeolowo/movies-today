@@ -163,7 +163,7 @@ export default function Home() {
       <header className="">
         <div className="max-w-7xl mx-auto px-4 py-6">
           {/* Search and Filters Row */}
-          <div className="flex flex-col lg:flex-row items-center gap-6 w-full">
+          <div className="flex flex-col lg:flex-row items-center gap-3 sm:gap-6 w-full">
             {/* Search Bar - Takes 50% on large screens */}
             <div className="w-full lg:w-1/2">
               <SearchBar 
@@ -220,7 +220,7 @@ export default function Home() {
         {/* Media Grid */}
         {data?.results && (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-6">
               {data.results
                 .filter(item => item && item.id) // Filter out null/undefined items
                 .map((item) => (

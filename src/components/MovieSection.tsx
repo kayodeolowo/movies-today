@@ -29,7 +29,7 @@ export default function MovieSection({
       </div>
 
       {/* Movies Grid - Show 2 rows (10 items) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-6 mb-6">
         {movies
           .filter(movie => movie && movie.id)
           .slice(0, 10) // Limit to 10 movies (2 rows on desktop)
