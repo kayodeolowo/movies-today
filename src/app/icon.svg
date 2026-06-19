@@ -1,0 +1,15 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="64" height="64" rx="14" fill="#2563eb"/>
+  <g fill="#ffffff">
+    <!-- Clapper top bar -->
+    <path d="M12 18.5 47.8 12l2.4 8.8L14.4 27.3 12 18.5Z" opacity="0.95"/>
+    <!-- Diagonal stripes on the clapper top (cut out via blue) -->
+    <path d="M21 16.2l-3.2 9.1 4.1-0.7 3.2-9.1-4.1 0.7Z" fill="#2563eb"/>
+    <path d="M31 14.4l-3.2 9.1 4.1-0.7 3.2-9.1-4.1 0.7Z" fill="#2563eb"/>
+    <path d="M41 12.6l-3.2 9.1 4.1-0.7 3.2-9.1-4.1 0.7Z" fill="#2563eb"/>
+    <!-- Clapper body -->
+    <rect x="13" y="28" width="38" height="24" rx="3"/>
+    <!-- Play triangle -->
+    <path d="M28 35.5v9l8-4.5-8-4.5Z" fill="#2563eb"/>
+  </g>
+</svg>
