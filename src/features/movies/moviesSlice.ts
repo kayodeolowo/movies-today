@@ -181,20 +181,14 @@ interface TVShowsResponse {
   total_results: number;
 }
 
-const API_READ_ACCESS_TOKEN = process.env.NEXT_PUBLIC_TMDB_API_READ_ACCESS_TOKEN || '';
-const BASE_URL = 'https://api.themoviedb.org/3';
+// Requests go through our own server-side proxy (src/app/api/tmdb/[...path]),
+// which attaches the TMDB token. The token is never exposed to the browser.
+const BASE_URL = '/api/tmdb';
 
 export const moviesApi = createApi({
   reducerPath: 'moviesApi',
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
-    prepareHeaders: (headers) => {
-      if (API_READ_ACCESS_TOKEN) {
-        headers.set('Authorization', `Bearer ${API_READ_ACCESS_TOKEN}`);
-      }
-      headers.set('accept', 'application/json');
-      return headers;
-    },
   }),
   tagTypes: ['Movie'],
   endpoints: (builder) => ({

@@ -21,7 +21,7 @@ export default function Footer() {
             </Link>
             {" • "}
             <span className="text-gray-500 dark:text-gray-500">
-              © 2025 Movies Today • Powered by TMDB
+              Movies Today • Powered by TMDB
             </span>
           </p>
         </div>
